@@ -33,8 +33,13 @@ else
 @code {
     private List<Product> Products = new List<Product>();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await ProductService.GetProducts();
+        ProductService.ProductsChanged += StateHasChanged;
+    }
+
+    public void OnDispose()
+    {
+        ProductService.ProductsChanged -= StateHasChanged;
     }
 }
