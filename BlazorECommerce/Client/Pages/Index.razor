@@ -5,7 +5,14 @@
 
 <PageTitle>My Shop</PageTitle>
 
-<ProductList/>
+@if(SearchText == null && CategoryUrl == null)
+{
+    <FeaturedProducts/>
+}
+else
+{
+    <ProductList/>
+}
 
 @code {
     [Parameter]
@@ -22,6 +29,7 @@
         }
         else
         {
+            //remover o codigo
             if (CategoryUrl == "search") CategoryUrl = null;
             await ProductService.GetProducts(CategoryUrl);
         }
