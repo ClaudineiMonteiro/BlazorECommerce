@@ -11,9 +11,9 @@
            placeholder="Search..."
            @ref="searchInput"/>
     <datalist id="products">
-        @foreach (var suggest in suggestions)
+        @foreach (var suggestion in suggestions)
         {
-            <option>@suggest</option>
+            <option>@suggestion</option>
         }
     </datalist>
     <div class="input-group-append">
@@ -48,7 +48,7 @@
         {
             SearchProducts();
         }
-        else if (searchText.Length > 1)
+        else if (searchText.Length > 2)
         {
             suggestions = await ProductService.GetAllProductSearchSuggestions(searchText);
         }

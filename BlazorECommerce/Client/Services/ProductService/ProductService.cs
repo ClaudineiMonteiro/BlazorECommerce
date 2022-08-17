@@ -48,7 +48,5 @@ public class ProductService : IProductService
     {
         var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<string>>>($"api/product/searchsuggestions/{searchText}");
         return result.Data;
-
-
     }
 }
