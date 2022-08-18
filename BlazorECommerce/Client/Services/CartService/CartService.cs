@@ -16,6 +16,7 @@ public class CartService : ICartService
         List<CartItem>? cart = await GetFromLocalStorage();
         cart.Add(cartItem);
         await _localStorage.SetItemAsync("cart", cart);
+        OnChange?.Invoke();
     }
 
     private async Task<List<CartItem>> GetFromLocalStorage()
