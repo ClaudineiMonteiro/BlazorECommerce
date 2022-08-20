@@ -26,24 +26,26 @@
     </div>
     <button type="submit" class="btn btn-primary">Register</button>   
     <br /><br />
-    <div class="text-danger">
-        <span>@errorMessage</span>
+    <div class="@messageCssClass">
+        <span>@message</span>
     </div>
 </EditForm>
 @code {
     UserRegister user = new UserRegister();
-    private string errorMessage = string.Empty;
+    private string message = string.Empty;
+    private string messageCssClass = string.Empty;
 
     private async Task HandleRegistration()
     {
         var result = await AuthService.Register(user);
-        if (!result.Success)
+        message = result.Message;
+        if (result.Success)
         {
-            errorMessage = result.Message;
+            messageCssClass = "text-success";
         }
         else
         {
-            errorMessage = string.Empty;
+            messageCssClass = "text-danger";
         }
     }
 }
