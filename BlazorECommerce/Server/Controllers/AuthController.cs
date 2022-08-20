@@ -24,4 +24,16 @@ public class AuthController : ControllerBase
 
 		return Ok(response);
 	}
+
+	[HttpPost("login")]
+	public async Task<ActionResult<ServiceResponse<string>>> Login(UserLogin userLogin)
+	{
+		var response = await _authService.Login(userLogin.Email, userLogin.Password);
+		if (!response.Success)
+		{
+			return BadRequest(response);
+		}
+
+		return Ok(response);
+	}
 }

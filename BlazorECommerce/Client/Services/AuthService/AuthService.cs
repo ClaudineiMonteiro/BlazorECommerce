@@ -1,4 +1,6 @@
-﻿namespace BlazorECommerce.Client.Services.AuthService;
+﻿using BlazorECommerce.Shared;
+
+namespace BlazorECommerce.Client.Services.AuthService;
 
 public class AuthService : IAuthService
 {
@@ -7,6 +9,12 @@ public class AuthService : IAuthService
     public AuthService(HttpClient http)
     {
         _http = http;
+    }
+
+    public async Task<ServiceResponse<string>> Login(UserLogin userLogin)
+    {
+        var result = await _http.PostAsJsonAsync("api/auth/login", userLogin);
+        return await result.Content.ReadFromJsonAsync<ServiceResponse<string>>() ?? new ServiceResponse<string> { Success = false, Message = "Some problem some problem occuored!!!" };
     }
 
     public async Task<ServiceResponse<int>> Register(UserRegister userRegister)
