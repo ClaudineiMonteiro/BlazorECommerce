@@ -11,10 +11,21 @@ public class AuthService : IAuthService
         _http = http;
     }
 
+    public async Task<ServiceResponse<bool>> ChangePassword(UserChangePassword userChangePassword)
+    {
+        var result = await _http.PostAsJsonAsync("api/auth/change-password", userChangePassword.Password);
+        return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+    }
+
     public async Task<ServiceResponse<string>> Login(UserLogin userLogin)
     {
         var result = await _http.PostAsJsonAsync("api/auth/login", userLogin);
         return await result.Content.ReadFromJsonAsync<ServiceResponse<string>>() ?? new ServiceResponse<string> { Success = false, Message = "Some problem some problem occuored!!!" };
+    }
+
+    public Task<ServiceResponse<bool>> Logout()
+    {
+        throw new NotImplementedException();
     }
 
     public async Task<ServiceResponse<int>> Register(UserRegister userRegister)
