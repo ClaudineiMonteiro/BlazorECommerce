@@ -29,9 +29,24 @@ public class CartController : ControllerBase
         return Ok(result);
     }
 
-	[HttpGet("count")]
+    [HttpPost("add")]
+    public async Task<ActionResult<ServiceResponse<bool>>> AddToCart(CartItem cartItem)
+    {
+        var result = await _cartService.AddToCart(cartItem);
+        return Ok(result);
+    }
+
+    [HttpGet("count")]
 	public async Task<ActionResult<ServiceResponse<int>>> GetCartItemsCount()
 	{
 		return	Ok(await _cartService.GetCartItemsCount());
 	}
+
+    [HttpGet]
+    public async Task<ActionResult<ServiceResponse<List<CartProductResponse>>>> GetDbCartProducts()
+    {
+        var result = await _cartService.GetDbCartProducts();
+		return Ok(result);
+    }
+
 }

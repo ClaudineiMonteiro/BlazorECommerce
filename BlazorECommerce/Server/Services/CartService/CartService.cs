@@ -61,12 +61,38 @@ public class CartService : ICartService
         _context.CarItems.AddRange(cartItems);
         await _context.SaveChangesAsync();
 
-        return await GetCartProducts(await _context.CarItems.Where(ci => ci.UserId == userId).ToListAsync());
+        return await GetDbCartProducts();
     }
 
     public async Task<ServiceResponse<int>> GetCartItemsCount()
     {
         var count = (await _context.CarItems.Where(ci => ci.UserId == GetUserId()).ToListAsync()).Count;
         return new ServiceResponse<int> { Data = count };
+    }
+
+    public async Task<ServiceResponse<List<CartProductResponse>>> GetDbCartProducts()
+    {
+        return await GetCartProducts(await _context.CarItems.Where(ci => ci.UserId == GetUserId()).ToListAsync());
+    }
+
+    public async Task<ServiceResponse<bool>> AddToCart(CartItem cartItem)
+    {
+        cartItem.UserId = GetUserId();
+
+        var sameItem = await _context.CarItems
+            .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId &&
+                ci.ProductTypeId == cartItem.ProductTypeId &&
+                ci.UserId == cartItem.UserId);
+
+        if (sameItem == null)
+        {
+            _context.CarItems.Add(cartItem);
+        }
+        else
+        {
+            sameItem.Quantity += cartItem.Quantity;
+        }
+        await _context.SaveChangesAsync();
+        return new ServiceResponse<bool> { Data = true };
     }
 }
