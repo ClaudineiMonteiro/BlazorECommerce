@@ -6,18 +6,16 @@ public class OrderService : IOrderService
 {
     private readonly DataContext _context;
     private readonly ICartService _cartService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthService _authService;
 
     public OrderService(DataContext context,
         ICartService cartService,
-        IHttpContextAccessor httpContextAccessor)
+        IAuthService authService)
     {
         _context = context;
         _cartService = cartService;
-        _httpContextAccessor = httpContextAccessor;
+        _authService = authService;
     }
-
-    private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
     public async Task<ServiceResponse<bool>> PlaceOrder()
     {
@@ -36,7 +34,7 @@ public class OrderService : IOrderService
 
         var order = new Order
         {
-            UserId = GetUserId(),
+            UserId = _authService.GetUserId(),
             OrderDate = DateTime.Now,
             TotalPrice = totalPrice,
             OrderItems = orderItems
@@ -44,7 +42,7 @@ public class OrderService : IOrderService
 
         _context.Orders.Add(order);
 
-        _context.CarItems.RemoveRange(_context.CarItems.Where(ci => ci.UserId == GetUserId()));
+        _context.CarItems.RemoveRange(_context.CarItems.Where(ci => ci.UserId == _authService.GetUserId()));
 
         await _context.SaveChangesAsync();
 
