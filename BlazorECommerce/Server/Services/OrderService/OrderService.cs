@@ -21,37 +21,33 @@ public class OrderService : IOrderService
 
     public async Task<ServiceResponse<bool>> PlaceOrder()
     {
-        try
+        var products = (await _cartService.GetDbCartProducts()).Data;
+        decimal totalPrice = 0;
+        products.ForEach(product => totalPrice += product.Price * product.Quantity);
+
+        var orderItems = new List<OrderItem>();
+        products.ForEach(product => orderItems.Add(new OrderItem
         {
-            var products = (await _cartService.GetDbCartProducts()).Data;
-            decimal totalPrice = 0;
-            products.ForEach(product => totalPrice += product.Price * product.Quantity);
+            ProductId = product.ProductId,
+            ProductTypeId = product.ProductTypeId,
+            Quantity = product.Quantity,
+            TotalPrice = product.Price * product.Quantity
+        }));
 
-            var orderItems = new List<OrderItem>();
-            products.ForEach(product => orderItems.Add(new OrderItem
-            {
-                ProductId = product.ProductId,
-                ProductTypeId = product.ProductTypeId,
-                Quantity = product.Quantity,
-                TotalPrice = product.Price * product.Quantity
-            }));
-
-            var order = new Order
-            {
-                UserId = GetUserId(),
-                OrderDate = DateTime.Now,
-                TotalPrice = totalPrice,
-                OrderItems = orderItems
-            };
-
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
-            return new ServiceResponse<bool> { Data = true };
-        }
-        catch (Exception ex)
+        var order = new Order
         {
+            UserId = GetUserId(),
+            OrderDate = DateTime.Now,
+            TotalPrice = totalPrice,
+            OrderItems = orderItems
+        };
 
-            throw new Exception(ex.Message);
-        }
+        _context.Orders.Add(order);
+
+        _context.CarItems.RemoveRange(_context.CarItems.Where(ci => ci.UserId == GetUserId()));
+
+        await _context.SaveChangesAsync();
+
+        return new ServiceResponse<bool> { Data = true };
     }
 }
