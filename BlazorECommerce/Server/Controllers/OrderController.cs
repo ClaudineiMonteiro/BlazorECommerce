@@ -27,4 +27,11 @@ public class OrderController : ControllerBase
 		var result = await _orderService.getOrders();
 		return Ok(result);
 	}
+
+    [HttpGet("{orderId:int}")]
+    public async Task<ActionResult<ServiceResponse<OrderOverviewResponse>>> GetOrdersDetails(int orderId)
+    {
+        var result = await _orderService.GetOrderDetails(orderId);
+        return Ok(result);
+    }
 }

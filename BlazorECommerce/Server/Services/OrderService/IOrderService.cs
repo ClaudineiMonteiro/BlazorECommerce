@@ -4,5 +4,6 @@
     {
         Task<ServiceResponse<bool>> PlaceOrder();
         Task<ServiceResponse<List<OrderOverviewResponse>>> getOrders();
+        Task<ServiceResponse<OrderDetailsResponse>> GetOrderDetails(int orderId);
     }
 }

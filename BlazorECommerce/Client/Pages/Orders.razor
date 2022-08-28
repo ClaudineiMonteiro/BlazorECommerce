@@ -3,13 +3,13 @@
 
 <h3>Orders</h3>
 
-@if(orders == null)
+@if (orders == null)
 {
-    <span> Loading your orders...</span>
+    <span>Loading your orders...</span>
 }
 else if (orders.Count <= 0)
 {
-    <span> You have no orders, yet.</span>
+    <span>You have no orders, yet.</span>
 }
 else
 {
@@ -21,14 +21,13 @@ else
             </div>
             <div class="details">
                 <h4>@order.Product</h4>
-                <span>@order.OrderDate</span>
+                <span>@order.OrderDate</span><br />
                 <a href="orders/@order.Id">Show more...</a>
             </div>
             <div class="order-price">$@order.TotalPrice</div>
         </div>
     }
 }
-
 
 
 @code {
